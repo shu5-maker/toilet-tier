@@ -65,7 +65,7 @@ if submitted:
         else:tier = "D"
 
         new_row = pd.DataFrame([{
-    "名前":final_name,"Tier":tier,"合計点":total_score,"便器":q_benki,"清潔感":q_seiketukan,"匂い":q_nioi,"洗面台":q_senmendai,"物置":q_monooki,"レバー":q_reba,"広さ":q_hirosa,"感覚":q_kankaku
+    "名前":final_name,"Tier":tier,"合計点":total_score,"lat":34.7024,"lng":135.4959,"便器":q_benki,"清潔感":q_seiketukan,"匂い":q_nioi,"洗面台":q_senmendai,"物置":q_monooki,"レバー":q_reba,"広さ":q_hirosa,"感覚":q_kankaku
 }])
         
         df=pd.concat([load_data(),new_row],ignore_index=True)
@@ -99,4 +99,3 @@ st.subheader("現在のTierリスト")
 current_df = load_data()
 if not current_df.empty:
     st.dataframe(current_df,use_container_width=True)
-    
