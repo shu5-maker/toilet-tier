@@ -77,7 +77,7 @@ if submitted:
 
 
         new_row = pd.DataFrame([{
-    "名前":final_name,"Tier":tier,"合計点":total_score,"lat":34.7024,"lng":135.4959,"便器":q_benki,"清潔感":q_seiketukan,"匂い":q_nioi,"洗面台":q_senmendai,"物置":q_monooki,"レバー":q_reba,"広さ":q_hirosa,"感覚":q_kankaku
+    "名前":final_name,"Tier":tier,"合計点":total_score,"lat":current_lat,"lng":current_lng,"便器":q_benki,"清潔感":q_seiketukan,"匂い":q_nioi,"洗面台":q_senmendai,"物置":q_monooki,"レバー":q_reba,"広さ":q_hirosa,"感覚":q_kankaku
 }])
         
         df=pd.concat([load_data(),new_row],ignore_index=True)
