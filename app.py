@@ -91,7 +91,7 @@ with tab2:
     for index,row in df.iterrows():
         if pd.notnull(row['lat'])and pd.notnull(row['lng']):
             
-            google_map_url=f"https://www.google.com/maps/dir/?api=1&destination={row['lat']},{row[lng]}"
+            google_map_url=f"https://www.google.com/maps/dir/?api=1&destination={row['lat']},{row['lng']}"
             popup_html = f"""
                 <b>{row['名前']}</b><br>
                 Tier:{row['Tier']}({row['合計点']}点)<br>
