@@ -22,6 +22,12 @@ st.set_page_config(page_title="トイレTier",layout="centered")
 st.title("トイレTier")
 tab1,tab2=st.tabs(["評価を記録する","マップで探す"])
 with tab1:
+    # 🚨 データの全削除ボタン（管理者用）
+if st.button("⚠️ 全データを削除してリセットする"):
+    if os.path.exists(DATA_FILE):
+        os.remove(DATA_FILE) # ファイルそのものを削除
+        st.warning("データをすべて削除しました。ページを再読み込みしてください。")
+        st.rerun()
     st.subheader("GPSで現在地を取得")
     st.info("※スマホの場合は、ブラウザの位置情報許可を「許可」にしてください")
     loc = streamlit_geolocation()
