@@ -7,7 +7,12 @@ DATA_FILE = "toilet_data.csv"
 
 def load_data():
     if os.path.exists(DATA_FILE):
-        return pd.read_csv(DATA_FILE)
+            df=pd.read_csv(DATA_FILE)
+            if 'lat'not in df.columns:
+                df['lat']=None
+            if 'lng'not in df.columns:
+                df['lng']=None
+            return df
     else:
         return pd.DataFrame(columns=["名前","Tier","合計点","lat","lng","便器","清潔感","匂い","洗面台","物置","レバー","広さ","感覚"
         ])
@@ -94,3 +99,4 @@ st.subheader("現在のTierリスト")
 current_df = load_data()
 if not current_df.empty:
     st.dataframe(current_df,use_container_width=True)
+    
