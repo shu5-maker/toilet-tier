@@ -9,7 +9,7 @@ def load_data():
     if os.path.exists(DATA_FILE):
         return pd.read_csv(DATA_FILE)
     else:
-        return pd.DataFrame(columns=["名前","Tier","合計点","便器","清潔感","匂い","洗面台","物置","レバー","広さ","感覚"
+        return pd.DataFrame(columns=["名前","Tier","合計点","lat","lng","便器","清潔感","匂い","洗面台","物置","レバー","広さ","感覚"
         ])
         
 st.set_page_config(page_title="トイレTier",layout="centered")
@@ -70,8 +70,23 @@ if submitted:
 
 with tab2:
     st.subheader("梅田エリア　トイレマップ")
-    st.info("現在はテストとして梅田周辺を表示しています")
+    df = load_data()
     m = folium.Map(location=[34.7024,135.4959],zoom_start=15)
+    for index,row in df.iterrows():
+        if pd.notnull(row['lat'])and pd.notnull(row['lng']):
+            
+            google_map_url=f"https://www.google.com/maps/dir/?api=1&destination={row['lat']},{row[lng]}"
+            popup_html = f"""
+                <b>{row['名前']}</b><br>
+                Tier:{row['Tier']}({row['合計点']}点)<br>
+                <a href = "{google_map_url}" target="_blank">　Googleマップでルート表示</a>
+            """
+            folium.Marker(
+                location=[row['lat'],row['lng']],
+                popup=folium.Popup(popup_html,max_width=300),
+                tooltip=row['名前'],
+                icon=folium.Icon(color="red"if row['Tier']in["SS","S"]else "blue")
+            ).add_to(m)
     st_folium(m,width=700,height=500)
     
 st.divider()
@@ -79,4 +94,3 @@ st.subheader("現在のTierリスト")
 current_df = load_data()
 if not current_df.empty:
     st.dataframe(current_df,use_container_width=True)
-    
