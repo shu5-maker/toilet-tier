@@ -3,6 +3,7 @@ import pandas as pd
 import os 
 import folium
 from streamlit_folium import st_folium
+from streamlit_geolocation import streamlit_geolocation
 DATA_FILE = "toilet_data.csv"
 
 def load_data():
@@ -21,6 +22,14 @@ st.set_page_config(page_title="トイレTier",layout="centered")
 st.title("トイレTier")
 tab1,tab2=st.tabs(["評価を記録する","マップで探す"])
 with tab1:
+    st.subheader("GPSで現在地を取得")
+    st.info("※スマホの場合は、ブラウザの位置情報許可を「許可」にしてください")
+    loc = streamlit_geolocation()
+    
+    current_lat=loc.get('latitude')if loc else None
+    current_lng=loc.get('longitude')if loc else None
+    if current_lat and current_lng:
+        st.success(f"現在地をロックしました!緯度:{current_lat},経度:{current_lng}")
     df = load_data()
     existing_names=df["名前"].unique().tolist() if not df.empty else[]
     name_options = ["新しく登録する"]+existing_names
@@ -64,6 +73,8 @@ if submitted:
         elif total_score >=6: tier ="C"
         else:tier = "D"
 
+        final_lat = current_lat if current_lat else 34.7024
+        final_lng = current_lng if current_lng else 135.4959
         new_row = pd.DataFrame([{
     "名前":final_name,"Tier":tier,"合計点":total_score,"lat":34.7024,"lng":135.4959,"便器":q_benki,"清潔感":q_seiketukan,"匂い":q_nioi,"洗面台":q_senmendai,"物置":q_monooki,"レバー":q_reba,"広さ":q_hirosa,"感覚":q_kankaku
 }])
@@ -80,7 +91,7 @@ with tab2:
     for index,row in df.iterrows():
         if pd.notnull(row['lat'])and pd.notnull(row['lng']):
             
-            google_map_url=f"https://www.google.com/maps/dir/?api=1&destination={row['lat']},{row['lng']}"
+            google_map_url=f"https://www.google.com/maps/dir/?api=1&destination={row['lat']},{row[lng]}"
             popup_html = f"""
                 <b>{row['名前']}</b><br>
                 Tier:{row['Tier']}({row['合計点']}点)<br>
@@ -99,3 +110,4 @@ st.subheader("現在のTierリスト")
 current_df = load_data()
 if not current_df.empty:
     st.dataframe(current_df,use_container_width=True)
+    
