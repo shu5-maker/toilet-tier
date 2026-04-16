@@ -62,6 +62,8 @@ if submitted:
     
     if final_name == ""or"未選択" in all_responses:
         st.error("すべての項目を回答してください!名前が空欄または未選択の項目があります")
+    elif current_lat is None or current_lng is None:
+        st.error("現在地が習得できていません。一番上のボタンを押して位置情報を許可してください")
     else:
         scores = [int(r.split(":")[0])for r in all_responses]
         total_score = sum(scores)
@@ -73,8 +75,7 @@ if submitted:
         elif total_score >=6: tier ="C"
         else:tier = "D"
 
-        final_lat = current_lat if current_lat else 34.7024
-        final_lng = current_lng if current_lng else 135.4959
+
         new_row = pd.DataFrame([{
     "名前":final_name,"Tier":tier,"合計点":total_score,"lat":34.7024,"lng":135.4959,"便器":q_benki,"清潔感":q_seiketukan,"匂い":q_nioi,"洗面台":q_senmendai,"物置":q_monooki,"レバー":q_reba,"広さ":q_hirosa,"感覚":q_kankaku
 }])
