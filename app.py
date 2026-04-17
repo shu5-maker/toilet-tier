@@ -8,15 +8,18 @@ from streamlit_gsheets import GSheetsConnection
 DATA_FILE = "toilet_data.csv"
 
 conn = st.connection("gsheets",type=GSheetsConnection)
-
 def load_data():
-    df = conn.read(ttl=0)
-    df= df.dropna(how="all")
-    if df.empty or len(df.columns)== 0:
-        return pd.DataFrame(columns=["名前","Tier","合計点","lat","lng","便器","清潔感","匂い","洗面台","物置","レバー","広さ","感覚"
-        ])    
-    return df
-        
+    try:
+        # 🌟 ここでエラーが起きたら、except の方にジャンプさせる
+        df = conn.read(ttl=0)
+        df = df.dropna(how="all") 
+        if df.empty or len(df.columns) == 0:
+            return pd.DataFrame(columns=["名前","Tier","合計点","lat","lng","便器","清潔感","匂い","洗面台","物置","レバー","広さ","感覚"])
+        return df
+    except Exception as e:
+        # 🚨 隠された本当のエラーを強制的に画面に出す！
+        st.error(f"🚨 Googleからの本当のエラーメッセージ: {e}")
+        st.stop() # ここでアプリの動きを止める
         
 st.set_page_config(page_title="トイレTier",layout="centered")
 st.title("トイレTier")
