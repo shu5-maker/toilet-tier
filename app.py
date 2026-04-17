@@ -36,7 +36,7 @@ with tab1:
         selected_lng = loc.get('longitude')if loc else None
         if selected_lat:
             st.success(f"GPSで現在地を取得しました")
-        else:
+        elif location_method =="地図から選択":
             st.info("地図上のトイレが有る場所をクリックしてください")
             m_select = folium.Map(location=[34.7024,135.4959],zoom_start=16)
             map_data = st_folium(m_select,width=700,height=400,key="location_picker")
