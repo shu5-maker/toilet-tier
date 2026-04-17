@@ -4,19 +4,19 @@ import os
 import folium
 from streamlit_folium import st_folium
 from streamlit_geolocation import streamlit_geolocation
+from stremlit_gsheets import GSheetsConnection
 DATA_FILE = "toilet_data.csv"
 
+conn = st.connection("gsheets",type=GSheetsConnection)
+
 def load_data():
-    if os.path.exists(DATA_FILE):
-            df=pd.read_csv(DATA_FILE)
-            if 'lat'not in df.columns:
-                df['lat']=None
-            if 'lng'not in df.columns:
-                df['lng']=None
-            return df
-    else:
+    df = conn.read(ttl=0)
+    df= df.dropna(how="all")
+    if df.empty or len(df.columns)== 0:
         return pd.DataFrame(columns=["名前","Tier","合計点","lat","lng","便器","清潔感","匂い","洗面台","物置","レバー","広さ","感覚"
-        ])
+        ])    
+    return df
+        
         
 st.set_page_config(page_title="トイレTier",layout="centered")
 st.title("トイレTier")
@@ -81,7 +81,9 @@ if submitted:
 }])
         
         df=pd.concat([load_data(),new_row],ignore_index=True)
-        df.to_csv(DATA_FILE,index=False,encoding="utf-8-sig")
+
+        conn.update(data=df)
+        st.cache_data.clear()
 
         st.success(f"{final_name}を{total_score}点(Tier{tier})で記録しました")
 # 🚨 データの全削除ボタン（管理者用）
