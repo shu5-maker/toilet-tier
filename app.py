@@ -4,7 +4,7 @@ import os
 import folium
 from streamlit_folium import st_folium
 from streamlit_geolocation import streamlit_geolocation
-from stremlit_gsheets import GSheetsConnection
+from streamlit_gsheets import GSheetsConnection
 DATA_FILE = "toilet_data.csv"
 
 conn = st.connection("gsheets",type=GSheetsConnection)
