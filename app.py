@@ -27,12 +27,24 @@ tab1,tab2=st.tabs(["評価を記録する","マップで探す"])
 with tab1:
     st.subheader("GPSで現在地を取得")
     st.info("※スマホの場合は、ブラウザの位置情報許可を「許可」にしてください")
-    loc = streamlit_geolocation()
+    location_method=st.radio("位置情報の入力方法",["GPSで取得","地図から選択"],horizontal = True)
+    selected_lat,selected_lng = None,None
     
-    current_lat=loc.get('latitude')if loc else None
-    current_lng=loc.get('longitude')if loc else None
-    if current_lat and current_lng:
-        st.success(f"現在地をロックしました!緯度:{current_lat},経度:{current_lng}")
+    if location_method =="GPSで取得する":
+        loc = streamlit_geolocation
+        selected_lat = loc.get('latitude')if loc else None
+        selected_lng = loc.get('longitude')if loc else None
+        if selected_lat:
+            st.success(f"GPSで現在地を取得しました")
+        else:
+            st.info("地図上のトイレが有る場所をクリックしてください")
+            m_select = folium.Map(location=[34.7024],zoom_start=16)
+            map_data = st_folium(m_select,width=700,height=400,key="location_picker")
+            
+            if map_data.get("last_clicked"):
+                selected_lat = map_data["last_clicked"]["lat"]
+                selected_lng = map_data["last_clicked"]["lng"]
+                st.success(f"地図から選択中({selected_lat:.5f},{selected_lng:.5f})")
     df = load_data()
     existing_names=df["名前"].unique().tolist() if not df.empty else[]
     name_options = ["新しく登録する"]+existing_names
@@ -65,8 +77,8 @@ if submitted:
     
     if final_name == ""or"未選択" in all_responses:
         st.error("すべての項目を回答してください!名前が空欄または未選択の項目があります")
-    elif current_lat is None or current_lng is None:
-        st.error("現在地が習得できていません。一番上のボタンを押して位置情報を許可してください")
+    elif selected_lat is None or selected_lng is None:
+        st.error("位置情報が選択されていません。GPSボタンを押すか、地図をクリックしてください")
     else:
         scores = [int(r.split(":")[0])for r in all_responses]
         total_score = sum(scores)
