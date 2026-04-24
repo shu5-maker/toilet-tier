@@ -12,10 +12,12 @@ def load_data():
     try:
         # 🌟 0（毎回通信）をやめて、600（10分間は記憶する）に変更！
         df = conn.read(ttl=600)
-        
         df = df.dropna(how="all") 
         if df.empty or len(df.columns) == 0:
             return pd.DataFrame(columns=["名前","Tier","合計点","lat","lng","便器","清潔感","匂い","洗面台","物置","レバー","広さ","感覚"])
+        df['lat'] = pd.to_numeric(df['lat'],errors='coerce')
+        df['lng'] = pd.to_numeric(df['lng'],errors='coerce')
+        
         return df
     except Exception as e:
         st.error(f"🚨 Googleからの本当のエラーメッセージ: {e}")
