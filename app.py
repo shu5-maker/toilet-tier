@@ -54,7 +54,7 @@ with tab1:
         for _, row in df.iterrows():
             try:
                 lat = float(row['lat'])
-                lng = float(rpw['lng'])
+                lng = float(row['lng'])
                 
                 if pd.insa(lat) or pd.insa(lng):
                     continue
