@@ -25,28 +25,42 @@ st.set_page_config(page_title="トイレTier",layout="centered")
 st.title("トイレTier")
 tab1,tab2=st.tabs(["評価を記録する","マップで探す"])
 with tab1:
-    st.subheader("GPSで現在地を取得")
+    loc = streamlit_geolocation()
+    curr_lat = loc.get('latitude') if loc else None
+    curr_lng = loc.get('logtiude') if loc else None
     st.info("※スマホの場合は、ブラウザの位置情報許可を「許可」にしてください")
     location_method=st.radio("位置情報の入力方法",["GPSで取得","地図から選択"],horizontal = True)
     selected_lat,selected_lng = None,None
     
     if location_method =="GPSで取得":
-        loc = streamlit_geolocation()
-        selected_lat = loc.get('latitude')if loc else None
-        selected_lng = loc.get('longitude')if loc else None
-        if selected_lat:
-            st.success(f"GPSで現在地を取得しました")
-        else:
-            st.info("上のマークを押して現在地を取得してください")
-    elif location_method =="地図から選択":
-            st.info("地図上のトイレが有る場所をクリックしてください")
-            m_select = folium.Map(location=[34.7024,135.4959],zoom_start=16)
-            map_data = st_folium(m_select,width=700,height=400,key="location_picker")
+       if curr_lat and curr_lng:
+           selected_lat,selected_lng = curr_lat,curr_lng
+           st.success("現在地を取得しました。下のフォームを入力してください")
+       else:
+           st.warning("GPSボタンを押して現在地を取得してください")
+    else:
+        center_coords = [curr_lat,curr_lng] if curr_lat else [34.7024,135.4959]
+        st.info("地図をタップして位置を指定してください")
+        
+        m_reg = folium.Map(location = center_coords,zoom_star=17)
+        
+        df = load_data()
+        for _, row in df.iterrows():
+            if pd.notnull(row['lat']) and pd.notnull(row['lng']):
+                folium.CircleMarker(
+                    locatio=[row['lat'],row["lng"]],
+                    radius = 5
+                    color ='blue' if row ['Tier']! = 'SS' else 'gold',
+                    tooltip =f"{row['名前']}(Tier:{row['Tier']})"
+                ).add_to(m_reg)
+        reg_map_data = st_folium(m_reg,widtha=700,height=400,key='reg_map')
+        
+        if reg_map_data.get("last_clicked"):
+            selected_lat = reg_map_data["last_clicked"]["lat"]
+            selected_lng = reg_map_data["lact_clicked"]["lng"]
+            st.success(f"選択中の位置:({selected_lat:.5f},{selected_lng:.5f})")
             
-            if map_data.get("last_clicked"):
-                selected_lat = map_data["last_clicked"]["lat"]
-                selected_lng = map_data["last_clicked"]["lng"]
-                st.success(f"地図から選択中({selected_lat:.5f},{selected_lng:.5f})")
+       
     df = load_data()
     existing_names=df["名前"].unique().tolist() if not df.empty else[]
     name_options = ["新しく登録する"]+existing_names
