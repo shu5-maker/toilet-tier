@@ -50,7 +50,7 @@ with tab1:
                 folium.CircleMarker(
                     locatio=[row['lat'],row["lng"]],
                     radius = 5,
-                    color ='blue' if row ['Tier']! = 'SS' else 'gold',
+                    color ='blue' if row ['Tier'] != 'SS' else 'gold',
                     tooltip =f"{row['名前']}(Tier:{row['Tier']})"
                 ).add_to(m_reg)
         reg_map_data = st_folium(m_reg,widtha=700,height=400,key='reg_map')
