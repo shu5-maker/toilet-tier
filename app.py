@@ -49,7 +49,7 @@ with tab1:
             if pd.notnull(row['lat']) and pd.notnull(row['lng']):
                 folium.CircleMarker(
                     locatio=[row['lat'],row["lng"]],
-                    radius = 5
+                    radius = 5,
                     color ='blue' if row ['Tier']! = 'SS' else 'gold',
                     tooltip =f"{row['名前']}(Tier:{row['Tier']})"
                 ).add_to(m_reg)
