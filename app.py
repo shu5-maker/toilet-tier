@@ -57,7 +57,7 @@ with tab1:
                     color ='blue' if row ['Tier'] != 'SS' else 'gold',
                     tooltip =f"{row['名前']}(Tier:{row['Tier']})"
                 ).add_to(m_reg)
-        reg_map_data = st_folium(m_reg,widtha=700,height=400,key='reg_map')
+        reg_map_data = st_folium(m_reg,width=700,height=400,key='reg_map')
         
         if reg_map_data.get("last_clicked"):
             selected_lat = reg_map_data["last_clicked"]["lat"]
