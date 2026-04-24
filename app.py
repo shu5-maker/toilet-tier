@@ -56,7 +56,7 @@ with tab1:
                 lat = float(row['lat'])
                 lng = float(row['lng'])
                 
-                if pd.insa(lat) or pd.insa(lng):
+                if pd.isna(lat) or pd.isna(lng):
                     continue
                 
                 folium.CircleMarker(
