@@ -52,13 +52,21 @@ with tab1:
         
         df = load_data()
         for _, row in df.iterrows():
-            if pd.notnull(row['lat']) and pd.notnull(row['lng']):
+            try:
+                lat = float(row['lat'])
+                lng = float(rpw['lng'])
+                
+                if pd.insa(lat) or pd.insa(lng):
+                    continue
+                
                 folium.CircleMarker(
-                    locatio=[row['lat'],row["lng"]],
+                    location=[lat,lng],
                     radius = 5,
                     color ='blue' if row ['Tier'] != 'SS' else 'gold',
                     tooltip =f"{row['名前']}(Tier:{row['Tier']})"
                 ).add_to(m_reg)
+            except (ValueError,TypeError):
+                pass
         reg_map_data = st_folium(m_reg,width=700,height=400,key='reg_map')
         
         if reg_map_data.get("last_clicked"):
@@ -134,7 +142,12 @@ with tab2:
     df = load_data()
     m = folium.Map(location=[34.7024,135.4959],zoom_start=15)
     for index,row in df.iterrows():
-        if pd.notnull(row['lat'])and pd.notnull(row['lng']):
+        try:
+            lat = float(row['lat'])
+            lng = float(row['lng'])
+
+            if pd.isna(lat) or pd.isna(lng):
+                continue
             
             google_map_url=f"https://www.google.com/maps/dir/?api=1&destination={row['lat']},{row['lng']}"
             popup_html = f"""
@@ -143,11 +156,13 @@ with tab2:
                 <a href = "{google_map_url}" target="_blank">　Googleマップでルート表示</a>
             """
             folium.Marker(
-                location=[row['lat'],row['lng']],
+                location=[lat,lng],
                 popup=folium.Popup(popup_html,max_width=300),
                 tooltip=row['名前'],
                 icon=folium.Icon(color="red"if row['Tier']in["SS","S"]else "blue")
             ).add_to(m)
+        except:
+            pass
     st_folium(m,width=700,height=500)
     
 st.divider()
