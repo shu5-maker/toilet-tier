@@ -39,10 +39,14 @@ with tab1:
        else:
            st.warning("GPSボタンを押して現在地を取得してください")
     else:
-        center_coords = [curr_lat,curr_lng] if curr_lat else [34.7024,135.4959]
+        if curr_lat is not None and curr_lng is not None:
+            center_coords = [curr_lat,curr_lng]
+        else:
+            center_coords =[34.7024,135.4959]
         st.info("地図をタップして位置を指定してください")
         
-        m_reg = folium.Map(location = center_coords,zoom_star=17)
+         
+        m_reg = folium.Map(location = center_coords,zoom_start=17)
         
         df = load_data()
         for _, row in df.iterrows():
