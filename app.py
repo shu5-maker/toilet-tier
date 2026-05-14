@@ -29,7 +29,7 @@ tab1,tab2=st.tabs(["評価を記録する","マップで探す"])
 with tab1:
     loc = streamlit_geolocation()
     curr_lat = loc.get('latitude') if loc else None
-    curr_lng = loc.get('logtiude') if loc else None
+    curr_lng = loc.get('longtiude') if loc else None
     st.info("※スマホの場合は、ブラウザの位置情報許可を「許可」にしてください")
     location_method=st.radio("位置情報の入力方法",["GPSで取得","地図から選択"],horizontal = True)
     selected_lat,selected_lng = None,None
@@ -71,7 +71,7 @@ with tab1:
         
         if reg_map_data.get("last_clicked"):
             selected_lat = reg_map_data["last_clicked"]["lat"]
-            selected_lng = reg_map_data["lact_clicked"]["lng"]
+            selected_lng = reg_map_data["last_clicked"]["lng"]
             st.success(f"選択中の位置:({selected_lat:.5f},{selected_lng:.5f})")
             
        
